@@ -17,9 +17,9 @@ from PyQt5.QtCore import *
 
 """
 todo: 
-    选中一列就选中一行
-    双击某一行弹窗显示其服务器日志内容
-    增加一个tab获取日志
+    选中一列就选中一行 | N
+    双击某一行弹窗显示其服务器日志内容 | Y
+    增加一个tab获取日志 | N
 """
 
 logging.basicConfig(level=logging.INFO)
@@ -36,23 +36,38 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):        
         super(MainWindow, self).__init__(parent)        
 
-        self.data_list = self.read_json()
-        self.signal_connected = False
-
         self.ui = demo_ui.Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.init_health_check_table()
+        self.init_get_log_tab()
+
+    def init_get_log_tab(self):
+        self.log_table = self.ui.log_table
+        
+        self.ui.pushButton.clicked.connect(self.on_click_get_log)
+
+    def init_health_check_table(self):
+        """
+        初始化Health check tab
+        """
+        self.data_list = self.read_json('./server_list.json')
+        self.signal_connected = False
         self.table = self.ui.tableWidget
         self.set_header()
-        self.add_item()
-        
+        self.add_item()        
         
         self.ui.update_selected_button.clicked.connect(self.on_click_update_selected)
         self.ui.update_all_button.clicked.connect(self.on_click_update_all)
         self.alert_signal.connect(self.show_message)
 
+    def on_click_get_log(self):
+        start_date = self.ui.start_date_Edit.text()
+        end_date = self.ui.end_date_Edit.text()
+        logger.info("start date:%s,end date:%s",start_date,end_date)
 
-    def read_json(self):
-        with open('./server_list.json','r',encoding="utf-8") as f:
+    def read_json(self,json_file):
+        with open(json_file,'r',encoding="utf-8") as f:
             json_list = json.load(f)
             return json_list
 
@@ -212,12 +227,12 @@ class MainWindow(QMainWindow):
         username = self.ui.username.text()
         password = self.ui.password.text()
         dmz_password = self.ui.dmz_password.text()
-        # logger.info('username:%s',username)
+        
         try:
             ssh_client.connect(hostname=hostname, port=8022,username=username,password=password)
         except Exception as e:
             logger.info('error:%s',e)
-            self.alert_signal.emit(hostname+str(e))
+            self.alert_signal.emit("hostname:"+hostname+"|username:"+username+"|"+str(e))
             
 
         stdin, stdout, stderr = ssh_client.exec_command('ps -ef |grep '+keyword+'|grep -v grep')
@@ -231,8 +246,3 @@ m = MainWindow()
 m.show()
 
 sys.exit(app.exec_())
-
-
-
-
-    

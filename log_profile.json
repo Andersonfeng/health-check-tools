@@ -1,0 +1,7 @@
+[
+    {"hostname":"192.168.50.70","remote_log_path":"","run_as":"","local_log_path":""},
+    {"hostname":"192.168.50.71","remote_log_path":"","run_as":"","local_log_path":""},
+    {"hostname":"192.168.50.72","remote_log_path":"","run_as":"","local_log_path":""},
+    {"hostname":"192.168.50.73","remote_log_path":"","run_as":"","local_log_path":""},
+    {"hostname":"192.168.50.74","remote_log_path":"","run_as":"","local_log_path":""}    
+]

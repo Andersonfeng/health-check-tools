@@ -12,7 +12,7 @@
     "keyword":"apache",
     "last_check":"",
     "status":"",
-    "log":"logging"
+    "log":""
     },
     {
     "service_name":"tinyproxy",
